@@ -95,18 +95,12 @@ class State:
         self.revision = 0
         self.index = 0
         self.total = 0
-        legacy = [ROOT / ".settings.json"]
-        if os.environ.get("KEYTOFOLDER_LEGACY_DIR"):
-            legacy.append(Path(os.environ["KEYTOFOLDER_LEGACY_DIR"]) / ".settings.json")
-        legacy.append(SETTINGS.parent.parent / "IllustrationSorter" / "settings.json")
-        existing_settings = SETTINGS if SETTINGS.exists() else next((p for p in legacy if p.is_file()), SETTINGS)
-        migrated = False
+        existing_settings = SETTINGS
         if existing_settings.exists():
             try:
                 saved = json.loads(existing_settings.read_text(encoding="utf-8"))
                 if isinstance(saved, dict):
                     self.config.update(saved)
-                    migrated = existing_settings != SETTINGS
             except (OSError, ValueError):
                 pass
         mappings = self.config.get("mappings", {})
@@ -127,9 +121,6 @@ class State:
                 self.scan()
             except (OSError, ValueError):
                 pass
-
-        if migrated:
-            self.save()
 
     def save(self):
         SETTINGS.parent.mkdir(parents=True, exist_ok=True)
