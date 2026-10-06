@@ -7,7 +7,7 @@ A local image sorter: preview an image, press a mapped key, and move the origina
 ## Features
 
 - Assign **45 destination keys**: A–Z, 0–9, and `- = [ ] ; ' , . /`.
-- Browse a scrollable, single-column thumbnail sidebar. Click a thumbnail to jump directly to that image.
+- Browse a scrollable thumbnail sidebar. Click a thumbnail to jump directly to that image.
 - Move an image and immediately show the next one. The sidebar follows selection and updates after moves and undo.
 - Undo moves, keep mappings across launches, and never overwrite an existing file.
 - Choose **한국어 (ko-KR)** or **English (en-US)**. The initial language is `None`, so the first launch asks you to choose. Your choice persists and can be changed using the Language button.
