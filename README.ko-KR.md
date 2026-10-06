@@ -2,9 +2,19 @@
 
 일러스트를 보면서 키 하나로 실제 폴더에 분류하는 로컬 앱입니다. Python이 파일을 처리하고 브라우저가 화면을 보여줍니다. 파일 이동에는 인터넷 연결이 필요하지 않습니다.
 
+## Windows 실행 파일
+
+Windows x64 앱에는 Python과 Pillow가 포함됩니다. `KeyToFolder-Windows-x64.zip`을 압축 해제하고 `KeyToFolder.exe`를 더블클릭하면 터미널 없이 앱 창으로 실행됩니다. 창을 닫으면 서버도 종료됩니다. 설정과 이동 기록은 `%APPDATA%\KeyToFolder\settings.json`에 저장되어 실행 파일을 교체해도 유지됩니다.
+
+[Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)이 필요합니다. 실행 파일에는 개발자 코드 서명이 없습니다. 기존 `launch.bat` 방식도 사용할 수 있으며, 그 경우 Python을 따로 설치해야 합니다.
+
+GitHub의 **Actions → Build Windows app**에서 빌드가 완료된 실행을 열고 `KeyToFolder-Windows-x64` 아티팩트를 내려받으세요. 압축을 풀면 배포용 Windows ZIP이 들어 있습니다. 이 ZIP을 Release에 첨부할 수 있습니다. 빌드 과정에서 실제 Windows 앱 창, 사진 표시, 이동·되돌리기, 설정 저장을 자동으로 확인합니다.
+
+직접 빌드하려면 Python 3.12를 설치한 Windows에서 `windows/build.bat`를 실행하세요. 결과는 `dist/KeyToFolder.exe`입니다.
+
 ## Requirements
 
-- **Python 3.10 이상**: [python.org에서 설치](https://www.python.org/downloads/)하세요. Python 자체는 배포 파일에 포함되어 있지 않습니다.
+- **Python 3.10 이상**: [python.org에서 설치](https://www.python.org/downloads/)하세요. 소스/브라우저 방식과 macOS 앱에 필요합니다. Windows 실행 파일에는 포함됩니다.
 - 최신 Chrome, Edge, Firefox 또는 Safari. AVIF 등 일부 형식의 미리보기는 브라우저 지원에 따라 달라집니다.
 - 기본 분류 기능은 Python 표준 라이브러리만 사용합니다. 별도의 패키지가 필요하지 않습니다.
 - **Pillow는 선택 사항**입니다. TIFF 미리보기를 사용하려면 아래 안내를 참고하세요.
