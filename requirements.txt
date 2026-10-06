@@ -1,0 +1,2 @@
+# Optional: enables TIFF previews and optimized sidebar thumbnails.
+Pillow
