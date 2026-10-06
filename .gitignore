@@ -4,6 +4,7 @@ __pycache__/
 .venv-build/
 .settings.json
 .settings.tmp
+.Rhistory
 .DS_Store
 Thumbs.db
 *.log
