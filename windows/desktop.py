@@ -44,10 +44,6 @@ def run(smoke_result=None):
     from http.server import ThreadingHTTPServer
 
     app.ROOT = resource_root
-    if getattr(sys, 'frozen', False):
-        # Migration from the source launcher's adjacent .settings.json.
-        os.environ['KEYTOFOLDER_LEGACY_DIR'] = str(Path(sys.executable).resolve().parent)
-        app.STATE = app.State()
     if smoke_result:
         from smoke_check import prepare
         prepare(app)
@@ -107,7 +103,6 @@ def main():
             args.smoke_test.parent.mkdir(parents=True, exist_ok=True)
             test_home = tempfile.TemporaryDirectory(prefix='KeyToFolder-check-')
             os.environ['APPDATA'] = test_home.name
-            os.environ.pop('KEYTOFOLDER_LEGACY_DIR', None)
         else:
             handle, kernel = single_instance()
             if handle is None:

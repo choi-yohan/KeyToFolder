@@ -100,7 +100,7 @@ py -3 -m venv .venv
 
 설정과 이동 기록은 macOS에서 `~/Library/Application Support/KeyToFolder/settings.json`, Windows에서 `%APPDATA%/KeyToFolder/settings.json`, Linux에서 `$XDG_CONFIG_HOME/KeyToFolder/settings.json` 또는 `~/.config/KeyToFolder/settings.json`에 저장됩니다. 앱을 업데이트해도 설정이 유지됩니다.
 
-설정에는 개인 폴더 경로가 있으므로 공개하지 마세요. 이전 버전의 앱 폴더에 `.settings.json`이 있으면 해당 설정을 읽습니다. `.gitignore`는 개인 설정, 가상 환경, 캐시를 제외합니다.
+설정에는 개인 폴더 경로가 있으므로 공개하지 마세요. `.gitignore`는 개인 설정, 가상 환경, 캐시를 제외합니다.
 
 ## Local operation
 
@@ -118,8 +118,10 @@ Developed with assistance from OpenAI Codex, GPT 6.1 Sol.
 
 배포 ZIP의 `KeyToFolder.app`을 더블클릭하면 터미널 없이 독립된 앱 창으로 실행됩니다. Dock에 끌어놓으면 다음부터 Dock에서 실행할 수 있습니다. `KeyToFolder.app` 하나만 응용 프로그램 폴더에 옮겨 사용할 수 있습니다. 프로그램 파일은 앱 안의 `Contents/Resources/Project`에 들어 있습니다. 설정은 앱 바깥의 사용자 설정 폴더에 저장되어 앱을 이동하거나 새 버전으로 교체해도 유지됩니다.
 
-새 설정이 없으면 앱 내부 또는 앱 옆의 이전 `.settings.json`, 기존 IllustrationSorter 설정을 자동으로 가져옵니다. 예전 브라우저 방식의 설정을 옮기려면 기존 `.settings.json`이 있는 폴더에서 새 앱을 한 번 실행한 뒤 응용 프로그램 폴더로 옮기세요. 이미 KeyToFolder 설정이 저장되어 있으면 그 설정을 우선 사용합니다.
+
 
 Python 3.10 이상은 여전히 필요합니다. macOS 11 이상용 Apple Silicon·Intel 통합 실행 파일이며, Apple Silicon에서 실행을 확인했습니다. Intel Mac에서 실제 실행은 확인하지 않았습니다. Apple 개발자 서명·공증을 받지 않은 앱이므로 첫 실행 시 macOS의 실행 확인이 필요할 수 있습니다. 기존 `launch.command`로 브라우저에서 실행하는 방식도 사용할 수 있습니다.
 
 런처 소스는 `macos/Launcher.swift`이며 Apple Command Line Tools가 설치된 환경에서 `bash macos/build.command`로 앱을 다시 만들 수 있습니다.
+
+썸네일은 화면 근처를 미리 불러오고 이미 생성한 이미지 요소를 재사용합니다. 캐시는 크기를 제한하며, 새로고침하면 갱신됩니다. 설정은 외부 설정 폴더의 settings.json만 사용합니다.

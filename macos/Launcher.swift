@@ -30,7 +30,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKUI
         var environment = ProcessInfo.processInfo.environment
         environment["PYTHONUNBUFFERED"] = "1"
         environment["PYTHONDONTWRITEBYTECODE"] = "1"
-        environment["KEYTOFOLDER_LEGACY_DIR"] = Bundle.main.bundleURL.deletingLastPathComponent().path
         process.environment = environment
         let stream = Pipe()
         process.standardOutput = stream

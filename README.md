@@ -99,7 +99,7 @@ The app retains the last 1,000 moves for undo. If a moved file has changed or di
 
 Settings, language and undo history are stored outside the app: macOS `~/Library/Application Support/KeyToFolder/settings.json`; Windows `%APPDATA%/KeyToFolder/settings.json`; Linux `$XDG_CONFIG_HOME/KeyToFolder/settings.json` (or `~/.config/KeyToFolder/settings.json`).
 
-Settings contain local folder paths. Do not publish them. `.gitignore` excludes `.settings.json`, virtual environments and caches. Previous app-folder settings are read if there is no settings file in the new location. An older configuration without a language triggers the language chooser once.
+Settings contain local folder paths. Do not publish them. `.gitignore` excludes `.settings.json`, virtual environments and caches. An older configuration without a language triggers the language chooser once.
 
 ## Local operation
 
@@ -117,6 +117,8 @@ The bottom of the right sidebar shows the last moved image, its current folder, 
 
 The release includes a universal launcher for Apple Silicon and Intel Macs (macOS 11+). It opens the interface in its own window; no separate browser or terminal is needed. Python 3.10+ is still required. Apple Silicon execution has been checked; the Intel build has not been tested on an Intel Mac. The application has a local ad-hoc signature, not an Apple Developer signature or notarization, so macOS may require approval on first launch.
 
-The macOS app can be moved to Applications on its own; installed Python 3.10+ is used. All project files live in `KeyToFolder.app/Contents/Resources/Project`. Settings are stored outside the app and survive replacing or moving the app. If no saved settings exist, legacy `.settings.json` inside the app, alongside the app, or the previous IllustrationSorter settings are imported automatically. To migrate old browser-mode settings, launch the new app once from the old project folder before moving it to Applications. Existing KeyToFolder settings take precedence.
+The macOS app can be moved to Applications on its own; installed Python 3.10+ is used. All project files live in `KeyToFolder.app/Contents/Resources/Project`. Settings are stored outside the app and survive replacing or moving the app.
 
 The launcher source is in `macos/Launcher.swift`; rebuild with `bash macos/build.command` after installing Apple Command Line Tools.
+
+Thumbnails preload nearby images and reuse existing image elements with a bounded cache. Refresh invalidates previews. Only the external settings.json is loaded; legacy settings import is removed.
