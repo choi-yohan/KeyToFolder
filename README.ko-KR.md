@@ -13,16 +13,6 @@
 - 최초 실행에서는 언어가 `None`이며 한국어(`ko-KR`) 또는 영어(`en-US`) 선택 창이 먼저 표시됩니다. 선택을 저장하면 이후 실행에도 유지됩니다. 상단 **언어** 버튼으로 다시 변경할 수 있습니다.
 - JPG, JPEG, PNG, WebP, GIF, AVIF, BMP, ICO, SVG를 표시합니다. TIFF 미리보기에는 선택 사항인 Pillow가 필요합니다. HEIC, RAW, PSD는 현재 지원하지 않습니다.
 
-## Windows 실행 파일
-
-Windows x64 앱에는 Python과 Pillow가 포함됩니다. `KeyToFolder-Windows-x64.zip`을 압축 해제하고 `KeyToFolder.exe`를 더블클릭하면 터미널 없이 앱 창으로 실행됩니다. 창을 닫으면 서버도 종료됩니다. 설정과 이동 기록은 `%APPDATA%\KeyToFolder\settings.json`에 저장되어 실행 파일을 교체해도 유지됩니다.
-
-[Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)이 필요합니다. 실행 파일에는 개발자 코드 서명이 없습니다. 기존 `launch.bat` 방식도 사용할 수 있으며, 그 경우 Python을 따로 설치해야 합니다.
-
-GitHub의 **Actions → Build Windows app**에서 빌드가 완료된 실행을 열고 `KeyToFolder-Windows-x64` 아티팩트를 내려받으세요. 압축을 풀면 배포용 Windows ZIP이 들어 있습니다. 빌드 과정에서 실제 Windows 앱 창, 사진 표시, 이동·되돌리기, 설정 저장을 자동으로 확인합니다.
-
-직접 빌드하려면 Python 3.12를 설치한 Windows에서 `windows/build.bat`를 실행하세요. 결과는 `dist/KeyToFolder.exe`입니다.
-
 ## Requirements
 
 - **Python 3.10 이상**: [python.org에서 설치](https://www.python.org/downloads/)하세요. 소스/브라우저 방식과 macOS 앱에 필요합니다. Windows 실행 파일에는 포함됩니다.
@@ -106,12 +96,22 @@ py -3 -m venv .venv
 
 서버는 이 컴퓨터의 `127.0.0.1`에만 연결합니다. 이미지나 설정을 외부 서버로 보내지 않습니다. 인터넷에 공개하는 서버로 실행하지 마세요. macOS 앱으로 실행했다면 창을 닫거나 ⌘Q를 누르면 앱과 서버가 종료됩니다. 브라우저 방식으로 실행했다면 터미널에서 Ctrl+C를 누르세요.
 
+## macOS app launcher
+
+Release에는 macOS 11 이상용 Apple Silicon 및 Intel 통합 실행 파일이 포함됩니다. 독립된 앱 창으로 실행되므로 별도의 브라우저나 터미널이 필요하지 않습니다. Python 3.10 이상은 여전히 필요합니다. Apple Silicon에서 실행을 확인했습니다. Intel Mac에서 실제 실행은 확인하지 않았습니다. 앱에는 로컬 ad-hoc 서명만 적용되어 있으며, Apple 개발자 서명 및 공증을 받지 않은 앱이므로 첫 실행 시 macOS의 실행 확인이 필요할 수 있습니다.
+
+## Windows executable
+
+Windows x64 앱에는 Python과 Pillow가 포함됩니다. `KeyToFolder-Windows-x64.zip`을 압축 해제하고 `KeyToFolder.exe`를 더블클릭하면 터미널 없이 앱 창으로 실행됩니다. 창을 닫으면 서버도 종료됩니다. 설정과 이동 기록은 `%APPDATA%\KeyToFolder\settings.json`에 저장되어 실행 파일을 교체해도 유지됩니다.
+
+[Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/)이 필요합니다. 실행 파일에는 개발자 코드 서명이 없습니다. 기존 `launch.bat` 방식도 사용할 수 있으며, 그 경우 Python을 따로 설치해야 합니다.
+
+GitHub의 **Actions → Build Windows app**에서 빌드가 완료된 실행을 열고 `KeyToFolder-Windows-x64` 아티팩트를 내려받으세요. 압축을 풀면 배포용 Windows ZIP이 들어 있습니다. 빌드 과정에서 실제 Windows 앱 창, 사진 표시, 이동·되돌리기, 설정 저장을 자동으로 확인합니다.
+
+직접 빌드하려면 Python 3.12를 설치한 Windows에서 `windows/build.bat`를 실행하세요. 결과는 `dist/KeyToFolder.exe`입니다.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
 
 Developed with assistance from OpenAI Codex, GPT-6.1 Sol.
-
-## macOS 앱으로 실행
-
-Release에는 macOS 11 이상용 Apple Silicon 및 Intel 통합 실행 파일이 포함됩니다. 독립된 앱 창으로 실행되므로 별도의 브라우저나 터미널이 필요하지 않습니다. Python 3.10 이상은 여전히 필요합니다. Apple Silicon에서 실행을 확인했습니다. Intel Mac에서 실제 실행은 확인하지 않았습니다. 앱에는 로컬 ad-hoc 서명만 적용되어 있으며, Apple 개발자 서명 및 공증을 받지 않은 앱이므로 첫 실행 시 macOS의 실행 확인이 필요할 수 있습니다.

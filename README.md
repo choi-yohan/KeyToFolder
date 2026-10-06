@@ -13,14 +13,6 @@ A local image sorter: preview an image, press a mapped key, and move the origina
 - Choose **한국어 (ko-KR)** or **English (en-US)**. The initial language is `None`, so the first launch asks you to choose. Your choice persists and can be changed using the Language button.
 - View JPG/JPEG, PNG, WebP, GIF, AVIF, BMP, ICO and SVG. TIFF previews use optional Pillow. HEIC, RAW and PSD are not currently supported.
 
-## Windows executable
-
-The Windows x64 desktop build includes Python and Pillow, opens its own window, and stops the local server when the window closes. Extract `KeyToFolder-Windows-x64.zip` and double-click `KeyToFolder.exe`. Settings remain in `%APPDATA%\KeyToFolder\settings.json`, so replacing the executable preserves preferences and undo history.
-
-Microsoft Edge WebView2 Runtime is required: [download from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/webview2/). The executable is not code-signed. The original `launch.bat` remains available for source/browser mode, which requires installed Python.
-
-The **Build Windows app** GitHub Actions workflow builds and checks the actual packaged window, image preview, move, undo, and settings persistence on Windows. Download its `KeyToFolder-Windows-x64` artifact and extract the Windows ZIP inside. For a local build, install Python 3.12 and run `windows/build.bat`; output is `dist/KeyToFolder.exe`.
-
 ## Requirements
 
 - **Python 3.10 or newer**: [download Python](https://www.python.org/downloads/). Required for source/browser mode and the macOS launcher; bundled with the Windows executable.
@@ -102,14 +94,22 @@ Settings contain local folder paths. Do not publish them. `.gitignore` excludes 
 
 ## Local operation
 
-The server binds only to `127.0.0.1`. Images and settings are not uploaded to an external service. Do not expose the server to the internet. In macOS app mode, close the app window or press Command+Q to stop the app and server. In browser mode, press Ctrl+C in the terminal.
+The server binds only to `127.0.0.1`. Images and settings are not uploaded to an external service. Do not expose the server to the internet. In macOS app mode or Windows executable mode, close the app window or press Command+Q to stop the app and server. In browser mode, press Ctrl+C in the terminal.
+
+## macOS app launcher
+
+The release includes a universal launcher for Apple Silicon and Intel Macs (macOS 11+). It opens the interface in its own window; no separate browser or terminal is needed. Python 3.10+ is still required. Apple Silicon execution has been checked; the Intel build has not been tested on an Intel Mac. The application has a local ad-hoc signature, not an Apple Developer signature or notarization, so macOS may require approval on first launch.
+
+## Windows executable
+
+The Windows x64 desktop build includes Python and Pillow, opens its own window, and stops the local server when the window closes. Extract `KeyToFolder-Windows-x64.zip` and double-click `KeyToFolder.exe`. Settings remain in `%APPDATA%\KeyToFolder\settings.json`, so replacing the executable preserves preferences and undo history.
+
+Microsoft Edge WebView2 Runtime is required: [download from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/webview2/). The executable is not code-signed. The original `launch.bat` remains available for source/browser mode, which requires installed Python.
+
+The **Build Windows app** GitHub Actions workflow builds and checks the actual packaged window, image preview, move, undo, and settings persistence on Windows. Download its `KeyToFolder-Windows-x64` artifact and extract the Windows ZIP inside. For a local build, install Python 3.12 and run `windows/build.bat`; output is `dist/KeyToFolder.exe`.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
 
 Developed with assistance from OpenAI Codex, GPT-6.1 Sol.
-
-## macOS app launcher
-
-The release includes a universal launcher for Apple Silicon and Intel Macs (macOS 11+). It opens the interface in its own window; no separate browser or terminal is needed. Python 3.10+ is still required. Apple Silicon execution has been checked; the Intel build has not been tested on an Intel Mac. The application has a local ad-hoc signature, not an Apple Developer signature or notarization, so macOS may require approval on first launch.
