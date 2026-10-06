@@ -1,0 +1,51 @@
+name: Build Windows app
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'windows/**'
+      - 'app.py'
+      - 'ui.html'
+      - '.github/workflows/windows-build.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          architecture: 'x64'
+          cache: pip
+          cache-dependency-path: windows/requirements-build.txt
+      - name: Install build dependencies
+        run: python -m pip install -r windows/requirements-build.txt
+      - name: Build standalone executable
+        run: python -m PyInstaller --noconfirm --clean --onefile --windowed --name KeyToFolder --paths . --paths windows --add-data "ui.html:." --icon windows/AppIcon.ico windows/desktop.py
+      - name: Check the packaged Windows app
+        shell: pwsh
+        run: |
+          $result = Join-Path $env:RUNNER_TEMP 'keytofolder-check.json'
+          $process = Start-Process -FilePath '.\dist\KeyToFolder.exe' -ArgumentList @('--smoke-test', ('"' + $result + '"')) -PassThru
+          if (-not $process.WaitForExit(90000)) {
+            Stop-Process -Id $process.Id -Force
+            throw 'Packaged application check timed out.'
+          }
+          if (Test-Path $result) { Get-Content $result }
+          if ($process.ExitCode -ne 0 -or -not (Test-Path $result)) { throw 'Packaged application check failed.' }
+          $checks = Get-Content $result -Raw | ConvertFrom-Json
+          if (-not $checks.ok) { throw 'Packaged application checks failed.' }
+      - name: Prepare download
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path package\KeyToFolder -Force
+          Copy-Item dist\KeyToFolder.exe, LICENSE, windows\README.txt package\KeyToFolder\
+          Compress-Archive -Path package\KeyToFolder -DestinationPath KeyToFolder-Windows-x64.zip
+      - uses: actions/upload-artifact@v4
+        with:
+          name: KeyToFolder-Windows-x64
+          path: KeyToFolder-Windows-x64.zip
+          if-no-files-found: error

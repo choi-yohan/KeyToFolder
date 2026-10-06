@@ -13,13 +13,21 @@ A local image sorter: preview an image, press a mapped key, and move the origina
 - Choose **한국어 (ko-KR)** or **English (en-US)**. The initial language is `None`, so the first launch asks you to choose. Your choice persists and can be changed using the Language button.
 - View JPG/JPEG, PNG, WebP, GIF, AVIF, BMP, ICO and SVG. TIFF previews use optional Pillow. HEIC, RAW and PSD are not currently supported.
 
+## Windows executable
+
+The Windows x64 desktop build includes Python and Pillow, opens its own window, and stops the local server when the window closes. Extract `KeyToFolder-Windows-x64.zip` and double-click `KeyToFolder.exe`. Settings remain in `%APPDATA%\KeyToFolder\settings.json`, so replacing the executable preserves preferences and undo history.
+
+Microsoft Edge WebView2 Runtime is required: [download from Microsoft](https://developer.microsoft.com/en-us/microsoft-edge/webview2/). The executable is not code-signed. The original `launch.bat` remains available for source/browser mode, which requires installed Python.
+
+The **Build Windows app** GitHub Actions workflow builds and checks the actual packaged window, image preview, move, undo, and settings persistence on Windows. Download its `KeyToFolder-Windows-x64` artifact and extract the Windows ZIP inside. For a local build, install Python 3.12 and run `windows/build.bat`; output is `dist/KeyToFolder.exe`.
+
 ## Requirements
 
-- **Python 3.10 or newer**: [download Python](https://www.python.org/downloads/). Python is not bundled with the app.
+- **Python 3.10 or newer**: [download Python](https://www.python.org/downloads/). Required for source/browser mode and the macOS launcher; bundled with the Windows executable.
 - A modern Chrome, Edge, Firefox or Safari browser. Preview support for some formats, such as AVIF, depends on your browser.
 - Core sorting uses only Python's standard library. No additional packages are required.
 
-macOS operation has been checked. Windows/Linux launchers and folder-picker support are provided, but have not been tested on those operating systems.
+macOS operation has been checked. The Windows desktop build is checked by GitHub Actions. Linux and the original Windows batch launcher have not been tested on those operating systems.
 
 ## Quick start
 
