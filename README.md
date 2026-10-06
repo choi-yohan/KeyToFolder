@@ -32,14 +32,11 @@ macOS operation has been checked. The Windows desktop build is checked by GitHub
 ## Quick start
 
 1. Download and extract the project. Keep `app.py` and `ui.html` together.
-2. On macOS, double-click `KeyToFolder.app` (included in the release ZIP). Program files are contained inside the app; settings are stored separately. Drag the app to the Dock for quick access. `launch.command` remains available for browser mode. On Windows, run `launch.bat`. On Linux, run `bash launch.command`.
+2. On macOS, double-click `KeyToFolder.app` (included in the release ZIP), and you can drag the app to the Dock for quick access. `launch.command` remains available. On Windows, run `launch.bat`. On Linux, run `bash launch.command`.
 3. Choose a language on the first launch.
 4. Select a **Source folder**.
 5. Open **Key mapping**, click a key on the keyboard layout, and choose or enter its destination folder in the editor above. Assigned keys are highlighted; hover to see the folder name. Save to apply your changes.
-
 6. Press a mapped key to move the current image. The next image appears automatically.
-
-The old backslash mapping is migrated to the slash key. If a slash mapping already exists, it is kept.
 
 If macOS reports that the launcher is not executable, run these commands in the project folder:
 
@@ -97,6 +94,8 @@ Files are moved without changing their names or image contents. If a destination
 
 The app retains the last 1,000 moves for undo. If a moved file has changed or disappeared, undo is blocked.
 
+The bottom of the right sidebar shows the last moved image, its current folder, and the folder it returns to when you undo. Use the Undo move button there to restore it.
+
 Settings, language and undo history are stored outside the app: macOS `~/Library/Application Support/KeyToFolder/settings.json`; Windows `%APPDATA%/KeyToFolder/settings.json`; Linux `$XDG_CONFIG_HOME/KeyToFolder/settings.json` (or `~/.config/KeyToFolder/settings.json`).
 
 Settings contain local folder paths. Do not publish them. `.gitignore` excludes `.settings.json`, virtual environments and caches. An older configuration without a language triggers the language chooser once.
@@ -109,16 +108,8 @@ The server binds only to `127.0.0.1`. Images and settings are not uploaded to an
 
 MIT. See [LICENSE](LICENSE).
 
-Developed with assistance from OpenAI Codex, GPT 6.1 Sol.
-
-The bottom of the right sidebar shows the last moved image, its current folder, and the folder it returns to when you undo. Use the Undo move button there to restore it.
+Developed with assistance from OpenAI Codex, GPT-6.1 Sol.
 
 ## macOS app launcher
 
 The release includes a universal launcher for Apple Silicon and Intel Macs (macOS 11+). It opens the interface in its own window; no separate browser or terminal is needed. Python 3.10+ is still required. Apple Silicon execution has been checked; the Intel build has not been tested on an Intel Mac. The application has a local ad-hoc signature, not an Apple Developer signature or notarization, so macOS may require approval on first launch.
-
-The macOS app can be moved to Applications on its own; installed Python 3.10+ is used. All project files live in `KeyToFolder.app/Contents/Resources/Project`. Settings are stored outside the app and survive replacing or moving the app.
-
-The launcher source is in `macos/Launcher.swift`; rebuild with `bash macos/build.command` after installing Apple Command Line Tools.
-
-Thumbnails preload nearby images and reuse existing image elements with a bounded cache. Refresh invalidates previews. Only the external settings.json is loaded; legacy settings import is removed.
