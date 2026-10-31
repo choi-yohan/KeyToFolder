@@ -60,6 +60,19 @@ Windows/Linux folder selection uses Tkinter. If it is unavailable, enter the fol
 
 Space and Right arrow intentionally perform the same navigation action. Punctuation mappings use physical keyboard positions; holding Shift does not change the assigned destination. Commands are ignored while typing in a field, selecting a language, or holding down a key.
 
+## Mapping presets
+
+Use presets to keep a source folder and its keyboard layout for each sorting stage. For example, use one preset for sorting a parent folder into categories and another for sorting within a category.
+
+1. Open **Key mapping**, set the source folder and subfolder option, and assign destination folders to keys.
+2. Enter a **Preset name** and choose **Save preset**. If the name exists, the button changes to **Overwrite**.
+3. Select a preset and choose **Load**, then **Save settings** to apply its source folder and key destinations together. Closing without applying keeps the current settings.
+4. To remove a preset, select it and choose **Delete**, then **Confirm delete**. This does not change the active settings.
+
+If you change the source folder while the current layout is not saved as a preset, a warning offers **Go back** or **Change without saving**. Going back preserves the previous source and draft mappings so you can save a preset first. An unchanged saved layout does not trigger this warning. Loading a preset with a different source folder uses the same check.
+
+Presets include the source path, subfolder option, and each key's destination path and category name. They persist in the existing external `settings.json`. Saving a preset alone does not apply it. Folder availability is checked on application, and destination conflicts are checked against the new source, so the previous source can be a destination in another preset. Undo history and language remain unchanged.
+
 ## Optional optimized previews
 
 For TIFF previews and smaller, cached sidebar thumbnails, install Pillow in a project virtual environment. Without Pillow, the sidebar uses browser-supported original images. Only the visible section and nearby items are rendered, so large folders do not create thousands of thumbnail elements. The launchers prefer this environment automatically.
@@ -99,6 +112,8 @@ The server binds only to `127.0.0.1`. Images and settings are not uploaded to an
 ## macOS app launcher
 
 The release includes a universal launcher for Apple Silicon and Intel Macs (macOS 11+). It opens the interface in its own window; no separate browser or terminal is needed. Python 3.10+ is still required. Apple Silicon execution has been checked; the Intel build has not been tested on an Intel Mac. The application has a local ad-hoc signature, not an Apple Developer signature or notarization, so macOS may require approval on first launch.
+
+- Save and load named key mapping presets for different sorting stages.
 
 ## Windows executable
 

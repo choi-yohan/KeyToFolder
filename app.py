@@ -87,9 +87,49 @@ def move_file(source, destination):
         raise
 
 
+def preset_mappings(raw):
+    """Presets can reference folders for another stage or a disconnected drive."""
+    if not isinstance(raw, dict):
+        raise ValueError("키 매핑 형식이 올바르지 않습니다.")
+    mapped = {}
+    for key, item in raw.items():
+        if key not in KEYS or not isinstance(item, dict):
+            raise ValueError("지원하는 영문자, 숫자 또는 특수문자 키를 사용해 주세요.")
+        path = item.get("path", "")
+        label = item.get("label", "")
+        if not isinstance(path, str) or not isinstance(label, str):
+            raise ValueError("키 매핑 형식이 올바르지 않습니다.")
+        if not path.strip():
+            continue
+        folder = Path(path.strip()).expanduser().resolve()
+        mapped[key] = {"path": str(folder), "label": label.strip() or folder.name}
+    return mapped
+
+
+def preset_layout(raw, require_mappings=True):
+    if not isinstance(raw, dict) or not isinstance(raw.get("source"), str):
+        raise ValueError("프리셋 설정 형식이 올바르지 않습니다.")
+    if not raw["source"].strip():
+        raise ValueError("이미지가 있는 폴더를 선택해 주세요.")
+    mappings = preset_mappings(raw.get("mappings"))
+    if require_mappings and not mappings:
+        raise ValueError("프리셋에 저장할 키를 하나 이상 지정해 주세요.")
+    return {"source": str(Path(raw["source"].strip()).expanduser().resolve()),
+            "recursive": bool(raw.get("recursive", False)), "mappings": mappings}
+
+
+def preset_name(value):
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError("프리셋 이름을 입력해 주세요.")
+    name = value.strip()
+    if len(name) > 80 or any(ord(character) < 32 for character in name):
+        raise ValueError("프리셋 이름은 줄바꿈 없이 80자 이내로 입력해 주세요.")
+    return name
+
+
 class State:
     def __init__(self):
-        self.config = {"source": "", "recursive": False, "mappings": {}, "history": [], "language": None}
+        self.config = {"source": "", "recursive": False, "mappings": {}, "presets": {}, "history": [], "language": None}
         self.files = []
         self.by_id = {}
         self.revision = 0
@@ -112,6 +152,14 @@ class State:
             k: v for k, v in mappings.items()
             if k in KEYS and isinstance(v, dict) and v.get("path")
         }
+        presets = self.config.get("presets", {})
+        self.config["presets"] = {}
+        if isinstance(presets, dict):
+            for name, layout in presets.items():
+                try:
+                    self.config["presets"][preset_name(name)] = preset_layout(layout)
+                except (OSError, ValueError, TypeError):
+                    continue
         if self.config.get("language") not in {"ko-KR", "en-US"}:
             self.config["language"] = None
         if not isinstance(self.config.get("history"), list):
@@ -181,7 +229,8 @@ class State:
         return {"source": self.config["source"], "recursive": self.config["recursive"],
                 "language": self.config["language"],
                 "revision": self.revision,
-                "mappings": self.config["mappings"], "remaining": len(self.files),
+                "mappings": self.config["mappings"], "presets": self.config["presets"],
+                "remaining": len(self.files),
                 "position": self.index + 1 if p else 0, "total": self.total,
                 "image": image, "canUndo": bool(self.config["history"]),
                 "lastMove": self.last_move(),
@@ -203,6 +252,26 @@ class State:
             self.config["recursive"] = bool(data.get("recursive", False))
             self.scan()
             self.save()
+        elif action == "layout":
+            # Validate against the NEW source, then commit the whole workspace together.
+            layout = preset_layout(data, require_mappings=False)
+            source = Path(layout["source"])
+            if not source.is_dir():
+                raise ValueError("선택한 폴더를 찾을 수 없습니다.")
+            for item in layout["mappings"].values():
+                destination = Path(item["path"])
+                if not destination.is_dir():
+                    raise ValueError(f"목적지 폴더를 찾을 수 없습니다: {destination}")
+                if destination == source:
+                    raise ValueError("원본 폴더와 목적지 폴더는 서로 달라야 합니다.")
+            previous = (self.config, self.files, self.by_id, self.revision, self.index, self.total)
+            self.config = {**self.config, **layout}
+            try:
+                self.scan()
+                self.save()
+            except (OSError, ValueError):
+                self.config, self.files, self.by_id, self.revision, self.index, self.total = previous
+                raise
         elif action == "mappings":
             mapped = {}
             for key, item in data.get("mappings", {}).items():
@@ -220,6 +289,24 @@ class State:
             if self.config["source"]:
                 self.scan()
             self.save()
+        elif action in {"preset_save", "preset_delete"}:
+            name = preset_name(data.get("name"))
+            previous = self.config["presets"]
+            updated = dict(previous)
+            if action == "preset_save":
+                if name in previous and data.get("overwrite") is not True:
+                    raise ValueError("같은 이름의 프리셋이 있습니다. 덮어쓰기를 눌러 주세요.")
+                updated[name] = preset_layout(data)
+            else:
+                if name not in previous:
+                    raise ValueError("선택한 프리셋을 찾을 수 없습니다.")
+                del updated[name]
+            self.config["presets"] = updated
+            try:
+                self.save()
+            except OSError:
+                self.config["presets"] = previous
+                raise
         elif action == "select":
             p = self.by_id.get(data.get("id"))
             if p is None:
@@ -283,6 +370,13 @@ class State:
 STATE = State()
 
 EN_ERRORS = {
+    "프리셋 설정 형식이 올바르지 않습니다.": "The preset layout format is invalid.",
+    "키 매핑 형식이 올바르지 않습니다.": "The key mapping format is invalid.",
+    "프리셋 이름을 입력해 주세요.": "Enter a preset name.",
+    "프리셋 이름은 줄바꿈 없이 80자 이내로 입력해 주세요.": "Use a single-line preset name of up to 80 characters.",
+    "같은 이름의 프리셋이 있습니다. 덮어쓰기를 눌러 주세요.": "A preset with this name already exists. Choose Overwrite to replace it.",
+    "프리셋에 저장할 키를 하나 이상 지정해 주세요.": "Assign at least one key before saving a preset.",
+    "선택한 프리셋을 찾을 수 없습니다.": "The selected preset could not be found.",
     "원본 파일이 없거나 링크 파일입니다. 목록을 새로고침해 주세요.": "The source file is missing or is a symbolic link. Refresh the list.",
     "목적지에 같은 이름의 파일이 있습니다. 덮어쓰지 않았습니다.": "A file with this name already exists in the destination. Nothing was overwritten.",
     "목적지에 같은 이름의 파일이 있습니다.": "A file with this name already exists in the destination.",
