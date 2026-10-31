@@ -60,6 +60,19 @@ Windows/Linux folder selection uses Tkinter. If it is unavailable, enter the fol
 
 Space and Right arrow intentionally perform the same navigation action. Punctuation mappings use physical keyboard positions; holding Shift does not change the assigned destination. Commands are ignored while typing in a field, selecting a language, or holding down a key.
 
+## Mapping presets
+
+Use presets to keep a source folder and its keys for each sorting stage.
+
+1. Open **Key mapping**. Your existing settings appear in the first preset.
+2. Select a preset to edit its name, source folder, subfolder option, and destination keys.
+3. **Add preset** creates an empty preset. **Duplicate** copies the current editor, including unsaved changes. **Delete** asks for a second click to confirm; at least one preset is kept.
+4. Choose **Save and apply** to save the preset and start sorting with it. Closing the editor leaves the current sorting settings unchanged.
+
+If you switch presets, add a preset, or change the source folder while there are unsaved changes, a warning lets you go back or continue without saving. New and duplicated presets are added to the list immediately; their folders and keys take effect when you choose **Save and apply**.
+
+Presets are stored in the external `settings.json`. The first preset keeps your existing settings. Folder availability is checked when applying a preset, and destination conflicts are checked against the new source, so the previous source can be a destination in another preset. Language and undo history are shared across presets.
+
 ## Optional optimized previews
 
 For TIFF previews and smaller, cached sidebar thumbnails, install Pillow in a project virtual environment. Without Pillow, the sidebar uses browser-supported original images. Only the visible section and nearby items are rendered, so large folders do not create thousands of thumbnail elements. The launchers prefer this environment automatically.
@@ -99,6 +112,8 @@ The server binds only to `127.0.0.1`. Images and settings are not uploaded to an
 ## macOS app launcher
 
 The release includes a universal launcher for Apple Silicon and Intel Macs (macOS 11+). It opens the interface in its own window; no separate browser or terminal is needed. Python 3.10+ is still required. Apple Silicon execution has been checked; the Intel build has not been tested on an Intel Mac. The application has a local ad-hoc signature, not an Apple Developer signature or notarization, so macOS may require approval on first launch.
+
+- Save and load named key mapping presets for different sorting stages.
 
 ## Windows executable
 
