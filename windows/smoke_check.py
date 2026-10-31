@@ -53,6 +53,33 @@ def check_window(window, app, url, result):
         window.evaluate_js("delete window.__retainedThumbnail; true")
         before = api('state')
         assert before['remaining'] == 100
+        # Check source-aware presets and their warning in the frozen Windows GUI.
+        original = {'source': before['source'], 'recursive': before['recursive'], 'mappings': before['mappings']}
+        saved = api('preset_save', {'name': 'Stage 1', **original})
+        assert saved['presets']['Stage 1'] == original
+        window.evaluate_js('render(' + json.dumps(saved) + '); mappingDialog(); true')
+        assert window.evaluate_js("document.getElementById('mappingSource').value") == original['source']
+        destination = before['mappings']['a']['path']
+        edit_script = ("selectMappingKey('a'); document.getElementById('mappingLabel').value='Unsaved'; "
+                       "document.getElementById('mappingLabel').dispatchEvent(new Event('input', {bubbles:true})); "
+                       "document.getElementById('mappingSource').value=" + json.dumps(destination) + "; "
+                       "document.getElementById('mappingSource').dispatchEvent(new Event('blur')); true")
+        window.evaluate_js(edit_script)
+        assert window.evaluate_js("document.getElementById('sourceChangeDialog').open"), 'Missing unsaved-preset warning.'
+        window.evaluate_js("document.getElementById('cancelSourceChange').click(); true")
+        assert window.evaluate_js("document.getElementById('mappingSource').value") == original['source']
+        window.evaluate_js(edit_script)
+        window.evaluate_js("document.getElementById('confirmSourceChange').click(); true")
+        assert window.evaluate_js("document.getElementById('mappingSource').value") == destination
+        window.evaluate_js("document.getElementById('mappingDialog').close(); true")
+        second = {'source': destination, 'recursive': True,
+                  'mappings': {'a': {'path': original['source'], 'label': 'Return'}}}
+        api('preset_save', {'name': 'Stage 2', **second})
+        applied = api('layout', second)
+        assert applied['source'] == destination and applied['mappings']['a']['path'] == original['source']
+        before = api('layout', original)
+        assert app.State().config['presets']['Stage 1'] == original
+        assert app.State().config['presets']['Stage 2'] == second
         moved = api('move', {'key': 'a', 'id': before['image']['id']})
         assert moved['remaining'] == 99 and moved['lastMove']['available']
         with urlopen(url + 'undo-thumbnail?id=' + moved['lastMove']['id'] + '&token=' + app.TOKEN) as response:
@@ -62,7 +89,7 @@ def check_window(window, app, url, result):
         assert app.State().config['mappings'] == restored['mappings']
         assert app.SETTINGS.parent.name == 'KeyToFolder'
         result.write_text(json.dumps({'ok': True, 'checks': ['native-window', 'packaged-html-js',
-            'image-preview', 'move', 'undo-preview', 'undo', 'persistent-settings', 'thumbnail-element-reuse', 'thumbnail-cache-bound']}), encoding='utf-8')
+            'image-preview', 'move', 'undo-preview', 'undo', 'persistent-settings', 'thumbnail-element-reuse', 'thumbnail-cache-bound', 'source-aware-presets', 'unsaved-source-warning-cancel-confirm']}), encoding='utf-8')
     except Exception:
         result.write_text(json.dumps({'ok': False, 'error': traceback.format_exc()}), encoding='utf-8')
     finally:
