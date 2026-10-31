@@ -8,7 +8,7 @@ from urllib.request import Request, urlopen
 
 def prepare(app):
     from PIL import Image
-    fixture = app.SETTINGS.parent / 'fixture'
+    fixture = (app.SETTINGS.parent / 'fixture').resolve()
     source, destination = fixture / 'source', fixture / 'destination'
     source.mkdir(parents=True)
     destination.mkdir()
