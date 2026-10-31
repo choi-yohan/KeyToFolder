@@ -53,12 +53,12 @@ class PresetsTest(unittest.TestCase):
         self.state.act('layout', self.state.config['presets']['Stage'])
         self.state.act('preset_delete', {'name': 'Stage'})
         self.assertEqual(self.state.config['mappings'], changed['mappings'])
-        self.assertEqual(self.app.State().config['presets'], {})
+        self.assertNotIn('Stage', self.app.State().config['presets'])
 
     def test_invalid_input_and_failed_writes_do_not_destroy_presets(self):
         self.save('Saved')
         previous = copy.deepcopy(self.state.config['presets'])
-        for payload in [{'name': ''}, {'name': 'x'*81}, {'name': 'Empty', 'mappings': {}},
+        for payload in [{'name': ''}, {'name': 'x'*81}, {'name': 'Wrong source', 'source': None},
                         {'name': 'Wrong', 'mappings': {'!': {'path': 'bad'}}}]:
             with self.assertRaises(ValueError):
                 self.state.act('preset_save', {**self.layout, **payload})
@@ -102,10 +102,42 @@ class PresetsTest(unittest.TestCase):
         self.state.act('layout', {**self.layout, 'mappings': {}})
         self.assertEqual(self.state.config['mappings'], {})
 
+    def test_blank_create_duplicate_rename_and_last_preset(self):
+        self.state.config['language'] = 'ko-KR'
+        before = copy.deepcopy(self.state.config)
+        self.state.act('preset_create', {})
+        name = self.state.summary()['selectedPreset']
+        blank = {'source': '', 'recursive': False, 'mappings': {}}
+        self.assertEqual(self.state.config['presets'][name], blank)
+        self.assertEqual(self.state.config['source'], before['source'])
+        self.state.act('preset_duplicate', {'name': 'Draft', **self.layout})
+        duplicate = self.state.summary()['selectedPreset']
+        self.assertEqual(self.state.config['presets'][duplicate], self.layout)
+        self.state.act('layout', {'preset': duplicate, 'preset_name': 'Renamed', **self.layout})
+        self.assertNotIn(duplicate, self.state.config['presets'])
+        self.assertEqual(self.app.State().summary()['selectedPreset'], 'Renamed')
+        before = copy.deepcopy(self.state.config)
+        with self.assertRaises(ValueError):
+            self.state.act('layout', {'preset': 'Renamed', 'preset_name': name, **self.layout})
+        self.assertEqual(self.state.config, before)
+        with patch.object(self.state, 'save', side_effect=OSError('Read only')):
+            with self.assertRaises(OSError):
+                self.state.act('layout', {'preset': 'Renamed', 'preset_name': 'Lost', **blank})
+        self.assertEqual(self.state.config, before)
+        for key in list(self.state.config['presets']):
+            if key != name:
+                self.state.act('preset_delete', {'name': key})
+        with self.assertRaises(ValueError):
+            self.state.act('preset_delete', {'name': name})
+        self.state.act('layout', {'preset': name, 'preset_name': name, **blank})
+        self.state.act('refresh', {})
+        self.assertEqual(self.state.summary()['remaining'], 0)
+        self.assertEqual(self.app.State().config['presets'][name], blank)
+
     def test_settings_without_presets_still_load(self):
         self.app.SETTINGS.write_text(json.dumps({'language': 'en-US', 'mappings': self.mapping}))
         state = self.app.State()
-        self.assertEqual(state.config['presets'], {})
+        self.assertEqual(state.config['presets']['Preset 1']['mappings'], self.mapping)
         self.assertEqual(state.config['mappings'], self.mapping)
 
 

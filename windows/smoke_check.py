@@ -17,6 +17,8 @@ def prepare(app):
         Image.new('RGB', (320, 240), (index * 2, 120, 160)).save(source / f'zsample-{index:03d}.png')
     app.STATE.config.update(language='en-US', source=str(source), history=[],
                             mappings={'a': {'label': 'Fixture', 'path': str(destination)}})
+    app.STATE.config['presets'] = {}
+    app.STATE.ensure_presets()
     app.STATE.scan()
     app.STATE.save()
 
@@ -57,7 +59,7 @@ def check_window(window, app, url, result):
         original = {'source': before['source'], 'recursive': before['recursive'], 'mappings': before['mappings']}
         saved = api('preset_save', {'name': 'Stage 1', **original})
         assert saved['presets']['Stage 1'] == original
-        window.evaluate_js('render(' + json.dumps(saved) + '); mappingDialog(); true')
+        window.evaluate_js('render(' + json.dumps(saved) + '); mappingDialog(); loadPresetLayout("Stage 1"); true')
         assert window.evaluate_js("document.getElementById('mappingSource').value") == original['source']
         destination = before['mappings']['a']['path']
         edit_script = ("selectMappingKey('a'); document.getElementById('mappingLabel').value='Unsaved'; "

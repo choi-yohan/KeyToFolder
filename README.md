@@ -62,16 +62,16 @@ Space and Right arrow intentionally perform the same navigation action. Punctuat
 
 ## Mapping presets
 
-Use presets to keep a source folder and its keyboard layout for each sorting stage. For example, use one preset for sorting a parent folder into categories and another for sorting within a category.
+Use presets to keep a source folder and its keys for each sorting stage.
 
-1. Open **Key mapping**, set the source folder and subfolder option, and assign destination folders to keys.
-2. Enter a **Preset name** and choose **Save preset**. If the name exists, the button changes to **Overwrite**.
-3. Select a preset and choose **Load**, then **Save settings** to apply its source folder and key destinations together. Closing without applying keeps the current settings.
-4. To remove a preset, select it and choose **Delete**, then **Confirm delete**. This does not change the active settings.
+1. Open **Key mapping**. Your existing settings appear in the first preset.
+2. Select a preset to edit its name, source folder, subfolder option, and destination keys.
+3. **Add preset** creates an empty preset. **Duplicate** copies the current editor, including unsaved changes. **Delete** asks for a second click to confirm; at least one preset is kept.
+4. Choose **Save and apply** to save the preset and start sorting with it. Closing the editor leaves the current sorting settings unchanged.
 
-If you change the source folder while the current layout is not saved as a preset, a warning offers **Go back** or **Change without saving**. Going back preserves the previous source and draft mappings so you can save a preset first. An unchanged saved layout does not trigger this warning. Loading a preset with a different source folder uses the same check.
+If you switch presets, add a preset, or change the source folder while there are unsaved changes, a warning lets you go back or continue without saving. New and duplicated presets are added to the list immediately; their folders and keys take effect when you choose **Save and apply**.
 
-Presets include the source path, subfolder option, and each key's destination path and category name. They persist in the existing external `settings.json`. Saving a preset alone does not apply it. Folder availability is checked on application, and destination conflicts are checked against the new source, so the previous source can be a destination in another preset. Undo history and language remain unchanged.
+Presets are stored in the external `settings.json`. The first preset keeps your existing settings. Folder availability is checked when applying a preset, and destination conflicts are checked against the new source, so the previous source can be a destination in another preset. Language and undo history are shared across presets.
 
 ## Optional optimized previews
 
