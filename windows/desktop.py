@@ -112,7 +112,13 @@ def main():
         details = traceback.format_exc()
         if args.smoke_test:
             import json
-            args.smoke_test.write_text(json.dumps({'ok': False, 'error': details}), encoding='utf-8')
+            if args.smoke_test.exists():
+                report = json.loads(args.smoke_test.read_text(encoding='utf-8'))
+                report['shutdown_error'] = details
+            else:
+                report = {'ok': False, 'error': details}
+            report['ok'] = False
+            args.smoke_test.write_text(json.dumps(report), encoding='utf-8')
         else:
             folder = Path(os.environ.get('APPDATA', str(Path.home()))) / 'KeyToFolder'
             try:
