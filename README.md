@@ -23,9 +23,8 @@ macOS operation has been checked. The Windows desktop build is checked by GitHub
 
 ## Quick start
 
-1. Download and extract the project. Keep `app.py` and `ui.html` together.
-2. On macOS, double-click `KeyToFolder.app` (included in the release ZIP), and you can drag the app to the Dock for quick access. `launch.command` remains available. On Windows, run `launch.bat`. On Linux, run `bash launch.command`.
-3. Choose a language on the first launch.
+1. Go to the releases tab, and click the latest release.
+2. Follow the instruction that correspond to your operating system.
 4. Select a **Source folder**.
 5. Open **Key mapping**, click a key on the keyboard layout, and choose or enter its destination folder in the editor above. Assigned keys are highlighted; hover to see the folder name. Save to apply your changes.
 6. Press a mapped key to move the current image. The next image appears automatically.
