@@ -25,8 +25,8 @@ macOS operation has been checked. The Windows desktop build is checked by GitHub
 
 1. Go to the releases tab, and click the latest release.
 2. Follow the instruction that correspond to your operating system.
-4. Select a **Source folder**.
-5. Open **Key mapping**, click a key on the keyboard layout, and choose or enter its destination folder in the editor above. Assigned keys are highlighted; hover to see the folder name. Save to apply your changes.
+4. Open **Preset settings** and select a source folder.
+5. Open **Preset settings**, click a key on the keyboard layout, and choose or enter its destination folder in the editor above. Assigned keys are highlighted; hover to see the folder name. Save to apply your changes.
 6. Press a mapped key to move the current image. The next image appears automatically.
 
 If macOS reports that the launcher is not executable, run these commands in the project folder:
@@ -63,7 +63,7 @@ Space and Right arrow intentionally perform the same navigation action. Punctuat
 
 Use presets to keep a source folder and its keys for each sorting stage.
 
-1. Open **Key mapping**. Your existing settings appear in the first preset.
+1. Open **Preset settings**. Your existing settings appear in the first preset.
 2. Select a preset to edit its name, source folder, subfolder option, and destination keys.
 3. **Add preset** creates an empty preset. **Duplicate** copies the current editor, including unsaved changes. **Delete** asks for a second click to confirm; at least one preset is kept.
 4. Choose **Save and apply** to save the preset and start sorting with it. Closing the editor leaves the current sorting settings unchanged.
